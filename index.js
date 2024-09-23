@@ -55,7 +55,46 @@ async function metasRealizadas() {
     const realizadas = metas.filter((meta) => {
         return meta.checked
     })
-    console.log(realizadas)
+    if (realizadas.length == 0) {
+        console.log("Não existem metas realizadas: ")
+        return
+    }
+}
+
+async function metasAbertas() {
+    const realizadas = metas.filter((meta) => {
+        return !meta.checked
+    })
+   
+    if (abertas.length == 0) {
+        console.log("Não existem metas abertas: ")
+        return
+    }
+}
+
+async function deletarMetas() {
+    const metasDesmarcadas = metas.map((meta) => {
+        return { value: meta.value, checked: false }
+    })
+
+    const itemsDeletar = await checkbox({
+        message: "Selecione item para deletar",
+        choices: [...metasDesmarcadas],
+        instructions: false,
+    })
+
+    if (itemsDeletar.length == 0) {
+        console.log("Nenhum item para deletar!")
+        return
+    }
+
+    itemsDeletar.forEach((item) => {
+        metas = metas.filter ((meta) => {
+            return meta.value !=item
+        })
+    })
+
+    console.log("Meta(s) deletada(s) com sucesso!")
 }
 
 async function start () {
@@ -67,6 +106,8 @@ async function start () {
                 {name: "Cadastrar nova meta", value: "cadastrar" },
                 {name: "Listar metas", value: "listar" },
                 {name: "Metas realizadas", value: "realizadas" },
+                {name: "Metas abertas", value: "abertas" },
+                {name: "Deletar Metas", value: "deletar" },
                 {name: "Sair", value: "sair"},
             ],    
         })
@@ -83,6 +124,12 @@ async function start () {
             case "Realizadas":
                 await metasRealizadas()
                 break
+            case "Abertas":
+                await metasAbertas()
+                break   
+            case "deletar":
+                await deletarMetas()
+                break     
             case "sair":
                 return
             }
